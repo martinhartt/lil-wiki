@@ -2,6 +2,9 @@ import requests
 import re
 import nltk
 from urllib import parse
+import string
+
+printable = set(string.printable)
 
 def extract_wiki(word):
 
@@ -72,6 +75,8 @@ def filter_sentences(article, word, wnl):
     """
 
     clean_text = re.sub("<[^>]+>", "", article)
+    clean_text = ''.join( b for b in clean_text if b in printable ) \
+        .replace('\n', ' ')
     all_sentences = nltk.sent_tokenize(clean_text)
 
     filtered_sentences = []
@@ -84,9 +89,13 @@ def filter_sentences(article, word, wnl):
     return filtered_sentences
 
 if __name__ == "__main__":
+    global sents 
+    sents = []
+	
     wnl = nltk.stem.WordNetLemmatizer()
     sample_input = ["asdfasdfasdf", "table", "chair", "grass"]
     for w in sample_input:
         html = extract_wiki(w)
         if html is not None:
-            print(filter_sentences(html, w, wnl))
+            sents.append(filter_sentences(html, w, wnl))
+
