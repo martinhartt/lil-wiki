@@ -63,7 +63,7 @@ def generate_rap():
     #     print(sentence.strip('.'), model.rspin(last_word))
 
 
-    path_to_file = generate(result)
+    path_to_file = generate(['Yo this is Lil Wiki']+result)
 
     return send_file(
         path_to_file,
