@@ -24,7 +24,7 @@ def generate_rap():
 
     phrases = split(['ok'])
 
-    path_to_file = generate("Testing testing")
+    path_to_file = generate(["Testing testing"])
 
     return send_file(
         path_to_file,

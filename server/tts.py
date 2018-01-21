@@ -227,26 +227,7 @@ def generate(text):
     tts_msspeak = MSSpeak(subscription_key, 'audio/')
     #edit the text input, directory and language accordingly
     #output_filename = tts_msspeak.speak("A table is a piece of furniture", "en-US")
-    sentenceSplit = [
-        'yo',
-        'Lil Wiki, the one and only, man\'s not hot',
-        'never hot',
-        'Skrrat',
-        'skidi-kat-kat',
-        'Boom',
-        'Two plus two is four',
-        'Minus one thats three, quick maths',
-        'Everyday mans on the block',
-        'Smoke trees (ah)',
-        'See your girl in the park',
-        'That girl is a uckers',
-        'When the ting went quack-quack-quack',
-        'You man were ducking',
-        'Hold tight, Asznee',
-        'Hes got the pumpy',
-        'Hold tight, my man',
-        'Hes got the frisbee'
-    ]
+    sentenceSplit = text
 
     times = [
         1000,
