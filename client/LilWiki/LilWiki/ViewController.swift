@@ -17,6 +17,8 @@ class ViewController: UIViewController {
   var previewLayer: AVCaptureVideoPreviewLayer?
   var label: UILabel!
   var makingRequest = false
+  var player: AVAudioPlayer? // <-- notice here
+
   
   override func viewDidLoad() {
     super.viewDidLoad()
@@ -29,7 +31,7 @@ class ViewController: UIViewController {
     
     label = UILabel(frame: view.bounds)
     view.addSubview(label)
-    label.font = UIFont.boldSystemFont(ofSize: 60.0)
+    label.font = UIFont.boldSystemFont(ofSize: 50.0)
     label.textAlignment = .center
     label.numberOfLines = 0
     label.textColor = .red
@@ -45,8 +47,7 @@ class ViewController: UIViewController {
     session = AVCaptureSession()
     session.sessionPreset = AVCaptureSession.Preset.photo
     
-    let camera = AVCaptureDevice
-      .default(for: AVMediaType.video)
+    let camera = AVCaptureDevice.default(for: AVMediaType.video)
     
     guard let input = try? AVCaptureDeviceInput(device: camera!) else { return }
     
@@ -85,6 +86,11 @@ class ViewController: UIViewController {
 
   func analyse(image: UIImage) {
     if makingRequest { return }
+    
+    DispatchQueue.main.async {
+      self.showThinking()
+      self.player?.stop()
+    }
     
     makingRequest = true
     let paths = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)
@@ -130,6 +136,7 @@ class ViewController: UIViewController {
                 print("\(tags) \(captions)")
                 DispatchQueue.main.async {
                   self.presentTags(tags: tags, captions: allCaptions)
+                  self.generateRap(tags: tags, captions: allCaptions)
                 }
               }
             }
@@ -141,18 +148,73 @@ class ViewController: UIViewController {
     )
   }
   
+  func randomText(array: [String]) -> String {
+    return array[Int(arc4random_uniform(UInt32(array.count)))]
+  }
+  
+  func showThinking() {
+    let thinking = [
+      "hang on i'm thinking",
+      "hmmm...",
+      "let me focus properly",
+      "gimme a sec",
+      "what is that?",
+    ]
+    label.text = randomText(array: thinking)
+    label.textColor = .white
+  }
+  
   func presentTags(tags: [String], captions: [String]) {
     makingRequest = false
-    label.text = captions[0] //tags.prefix(3).joined(separator: "\n")
+    label.textColor = .yellow
+    
+    let pointOut = [
+      "oh cool thats a",
+      "i love that",
+      "thats a nice"
+    ]
+    
+    label.text = "\(self.randomText(array: pointOut)) \(captions[0])"
+    Timer.scheduledTimer(withTimeInterval: 3.0, repeats: false) { (timer) in
+      self.label.textColor = .green
+      self.label.text = self.randomText(array: [
+        "hang on let me spit a few bars",
+        "check out these bars bro",
+        "how am i supposed to rap about this?"
+      ])
+    }
   }
   
   func imageWithImage(image:UIImage, scaledToSize scale:CGFloat) -> UIImage{
     let newSize = CGSize(width: image.size.width*scale, height: image.size.height*scale)
-    UIGraphicsBeginImageContextWithOptions(newSize, false, 0.0);
+    UIGraphicsBeginImageContextWithOptions(newSize, false, 0.0)
     image.draw(in: CGRect(origin: CGPoint.zero, size: CGSize(width: newSize.width, height: newSize.height)))
     let newImage:UIImage = UIGraphicsGetImageFromCurrentImageContext()!
     UIGraphicsEndImageContext()
     return newImage
+  }
+  
+  func generateRap(tags: [String], captions: [String]) {
+    Alamofire.request("https://5bc4cd12.ngrok.io/generate_rap").responseData { response in
+      debugPrint(response)
+      if let data = response.result.value {
+        print("DATA IS \(data)")
+        self.play(data: data)
+      }
+      print(response.error)
+    }
+  }
+  
+  func play(data: Data) {
+    self.label.text = ""
+    do {
+      player = try AVAudioPlayer(data: data)
+      guard let player = player else { return }
+      player.prepareToPlay()
+      player.play()
+    } catch let error {
+      print(error.localizedDescription)
+    }
   }
 }
 
