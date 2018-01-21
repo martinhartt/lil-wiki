@@ -82,9 +82,10 @@ def filter_sentences(article, word, wnl):
     filtered_sentences = []
 
     for s in all_sentences:
-        words = [wnl.lemmatize(w.lower()) for w in nltk.word_tokenize(s)]
-        if len(words) > 2 and len(words) < 20 and wnl.lemmatize(word.lower()) in words:
-            filtered_sentences.append(s)
+        words = [w.lower() for w in nltk.word_tokenize(s)]
+        lemmas = [wnl.lemmatize(w) for w in words]
+        if len(lemmas) > 2 and len(lemmas) and wnl.lemmatize(word.lower()) in lemmas:
+            filtered_sentences.append(words)
 
     return filtered_sentences
 
