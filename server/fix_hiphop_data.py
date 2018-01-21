@@ -9,6 +9,7 @@ outlaw_start = ['Artist:', 'Album: ', 'Typed by:', 'Song:']
 outlaw_mid = """
 anonymous/
 .html
+txt
 """.split('\n')
 
 with open('rapdata/hihop.txt', 'r', encoding="latin-1") as filein:
@@ -22,6 +23,6 @@ with open('rapdata/hihop.txt', 'r', encoding="latin-1") as filein:
                     continue
 
             for part in outlaw_mid:
-                if part in line:
+                if part in line.lower():
                     continue
             fileout.write(line)
