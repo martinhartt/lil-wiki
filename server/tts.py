@@ -227,35 +227,15 @@ def generate(text):
     tts_msspeak = MSSpeak(subscription_key, 'audio/')
     #edit the text input, directory and language accordingly
     #output_filename = tts_msspeak.speak("A table is a piece of furniture", "en-US")
-    sentenceSplit = text
+    print(len(text))
+    sentenceSplit = text[:18]
 
-    times = [
-        1000,
-        3500,
-        7500,
-        8500,
-        9500,
-        10500,
-        14000,
-        16000,
-        18000,
-        19800,
-        22000,
-        25000,
-        28000,
-        29000,
-        31000,
-        33000,
-        34000,
-        36000,
-        38000,
-        40000,
-
-    ]
+    times = [ i * 1775 + 1880 for i in range(len(sentenceSplit))]
 
     audio_array = []
 
     for i in range(len(sentenceSplit)):
+        print(i, sentenceSplit)
         output_filename = tts_msspeak.speak(sentenceSplit[i], "en-US", "Male")
         print(output_filename)
         output_path = os.path.join("audio/", output_filename)
@@ -267,12 +247,11 @@ def generate(text):
     #n = 50
     #play(instrumental * n)
 
-    background = AudioSegment.from_file("audio/mansnothot.mp3", format="mp3") - 10
+    background = (AudioSegment.from_file("loop.mp3", format="mp3") * 2) - 20
 
     combined = background
     for i in range(len(sentenceSplit)):
         combined = combined.overlay(audio_array[i], times[i])
-
 
     file_name = "sample.mp3"
     combined.export(file_name, format="mp3")

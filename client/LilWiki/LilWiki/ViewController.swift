@@ -209,7 +209,7 @@ class ViewController: UIViewController {
   }
   
   func generateRap(tags: [String], captions: [String]) {
-    Alamofire.request("https://5bc4cd12.ngrok.io/generate_rap").responseData { response in
+    Alamofire.request("https://5bc4cd12.ngrok.io/generate_rap?tags=\(tags.joined(separator: ","))&caption=\(captions[0].addingPercentEncoding(withAllowedCharacters: .urlHostAllowed)!)").responseData { response in
       debugPrint(response)
       if let data = response.result.value {
         print("DATA IS \(data)")
@@ -217,10 +217,13 @@ class ViewController: UIViewController {
       }
       print(response.error)
     }
+    
+    
   }
   
   func play(data: Data) {
     self.label.text = ""
+    self.label.backgroundColor = .clear
     do {
       player = try AVAudioPlayer(data: data)
       guard let player = player else { return }

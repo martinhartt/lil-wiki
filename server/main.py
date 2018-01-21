@@ -12,7 +12,7 @@ app = Flask(__name__)
 @app.route('/')
 def hello_world():
   return 'Hello, World!'
- 
+
 templates = []
 with open('caption-templates.txt', 'r') as f:
     for line in f:
@@ -24,43 +24,46 @@ print("Done ngrams")
 def last(words):
     if len(words) == 1:
         return words[0]
-        
+
     if words[-1].upper() == words[-1].lower():
         return last(words[:-1])
-        
+
     return ''.join(filter(lambda x: x.isalpha(), words[-1]))
 
 @app.route('/generate_rap', methods=['GET'])
 def generate_rap():
     caption = request.args.get('caption')
     sentences = generate_sentences(request.args.get("tags").split(',')) #only one sentence
-    
+
     A = [ (random.choice(templates).replace('_', caption) + '. ').split(' ') ]
     for i,sent  in enumerate(sentences[:14]):
-        rhyming = random.choice(pronouncing.rhymes(last(sent))) #last word
+        print('iu4ry', last(sent))
+        rhymes = pronouncing.rhymes(last(sent))
+        rhyming = random.choice(rhymes) if len(rhymes) > 0 else 'END' #last word
         C  = model.rspin(rhyming)
 
         A.append(sent)
         A.append(C)
-    
+
     print("A", A)
-    
-    result = []    
+
+    result = []
     for sent in A:
         phrases = split(sent)
+        if phrases is None:
+            continue
         result.extend(phrases)
-        
+
     print("result", result)
-    
-    
-    
+
+
+
     # for sentence in sentences[0]:
     #     last_word = sentence.strip('.').split(' ')[-1]
     #     print(sentence.strip('.'), model.rspin(last_word))
 
-    phrases = split(['ok'])
 
-    path_to_file = generate(["Testing testing"])
+    path_to_file = generate(result)
 
     return send_file(
         path_to_file,
@@ -70,5 +73,5 @@ def generate_rap():
     )
 
 if __name__ == '__main__':
-    pass
-  #app.run()
+    # pass
+  app.run()
