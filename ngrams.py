@@ -127,18 +127,18 @@ class LModel(object):
 	def rcomplete(self, postfix):
 		return self._complete(postfix, self.BACK_TABLE, 'END')
 								
-	def spin(self):
-		hist = [self.complete(["START"]) ]
+	def spin(self, seed = 'START'):
+		hist = [self.complete([seed]) ]
 		while(hist[-1] != "END"):
 			#print(hist)
 			hist.append(self.complete(hist))
 			
 		return hist[:-1]
 		
-	def rspin(self):
-		hist = [self.rcomplete(["END"]) ]
+	def rspin(self, seed='END'):
+		hist = [self.rcomplete([seed]) ]
 		while(hist[-1] != "START"):
 			#print(hist)
 			hist.append(self.rcomplete(hist))
 			
-		return list(reversed(hist))[:-1]
+		return list(reversed(hist))[1:]
