@@ -18,7 +18,9 @@ class ViewController: UIViewController {
   var label: UILabel!
   var makingRequest = false
   var player: AVAudioPlayer? // <-- notice here
-
+  
+  var rapperView: UIImageView!
+  var buttonView: UIImageView!
   
   override func viewDidLoad() {
     super.viewDidLoad()
@@ -29,13 +31,27 @@ class ViewController: UIViewController {
     tapGR.numberOfTapsRequired = 1
     view.addGestureRecognizer(tapGR)
     
-    label = UILabel(frame: view.bounds)
+    let labelSize = 180.0  as CGFloat
+    label = UILabel(frame: CGRect(x: 0, y: 30.0, width: view.bounds.width, height: labelSize).insetBy(dx: 10.0, dy: 10.0))
     view.addSubview(label)
-    label.font = UIFont.boldSystemFont(ofSize: 50.0)
+    label.font = UIFont.boldSystemFont(ofSize: 25.0)
     label.textAlignment = .center
     label.numberOfLines = 0
-    label.textColor = .red
+    label.backgroundColor = .clear
+    label.layer.cornerRadius = 10.0
+    label.layer.masksToBounds = true
     label.text = ""
+    
+    rapperView = UIImageView(frame: view.bounds.insetBy(dx: 30.0, dy: 30.0))
+    rapperView.image = #imageLiteral(resourceName: "lil_wiki")
+    rapperView.contentMode = .scaleAspectFit
+    view.addSubview(rapperView)
+    
+    let buttonSize = 100.0 as CGFloat
+    buttonView = UIImageView(frame: CGRect(x: 0, y: view.bounds.height - buttonSize * 2, width: view.bounds.width, height: buttonSize).insetBy(dx: 10.0, dy: 10.0))
+    buttonView.image = #imageLiteral(resourceName: "rapbutton")
+    buttonView.contentMode = .scaleAspectFit
+    view.addSubview(buttonView)
   }
 
   override func didReceiveMemoryWarning() {
@@ -160,13 +176,12 @@ class ViewController: UIViewController {
       "gimme a sec",
       "what is that?",
     ]
+    label.backgroundColor = .white
     label.text = randomText(array: thinking)
-    label.textColor = .white
   }
   
   func presentTags(tags: [String], captions: [String]) {
     makingRequest = false
-    label.textColor = .yellow
     
     let pointOut = [
       "oh cool thats a",
@@ -176,7 +191,6 @@ class ViewController: UIViewController {
     
     label.text = "\(self.randomText(array: pointOut)) \(captions[0])"
     Timer.scheduledTimer(withTimeInterval: 3.0, repeats: false) { (timer) in
-      self.label.textColor = .green
       self.label.text = self.randomText(array: [
         "hang on let me spit a few bars",
         "check out these bars bro",
