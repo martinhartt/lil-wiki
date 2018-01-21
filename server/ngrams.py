@@ -7,7 +7,6 @@ Created on Sat Jan 20 20:30:28 2018
 
 import itertools
 import random
-import nltk
 
 def incr(key, table):
 	table[key] = 1 + table.get(key,0)
