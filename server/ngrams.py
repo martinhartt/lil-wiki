@@ -136,9 +136,15 @@ class LModel(object):
 		return hist[:-1]
 
 	def rspin(self, seed='END'):
-		hist = [self.rcomplete([seed]) ]
-		while(hist[-1] != "START"):
-			#print(hist)
-			hist.append(self.rcomplete(hist))
+		try:
+			hist = [self.rcomplete([seed]) ]
+			while(hist[-1] != "START"):
+				#print(hist)
+				hist.append(self.rcomplete(hist))
 
-		return list(reversed(hist))[1:]
+			L = list(reversed(hist))
+			if (seed == 'END'):
+				return L[1:]
+			return L
+		except:
+			return self.rspin(seed='END')
