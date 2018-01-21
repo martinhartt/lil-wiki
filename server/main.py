@@ -36,7 +36,7 @@ def generate_rap():
     sentences = generate_sentences(request.args.get("tags").split(',')) #only one sentence
 
     A = [ (random.choice(templates).replace('_', caption) + '. ').split(' ') ]
-    for i,sent  in enumerate(sentences[:14]):
+    for i,sent  in enumerate(sentences[:30]):
         print('iu4ry', last(sent))
         rhymes = pronouncing.rhymes(last(sent))
         rhyming = random.choice(rhymes) if len(rhymes) > 0 else 'END' #last word
