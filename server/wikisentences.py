@@ -90,11 +90,19 @@ def filter_sentences(article, word, wnl):
 
 wnl = nltk.stem.WordNetLemmatizer()
 def generate_sentences(tags):
-    sents = []
-
+    
+    for w in tags:
+        if w not in generate_sentences.used:
+            html = extract_wiki(w)
+            if html is not None:
+                generate_sentences.used.append(w)
+                return filter_sentences(html, w, wnl)
     for w in tags:
         html = extract_wiki(w)
         if html is not None:
-            sents.append(filter_sentences(html, w, wnl))
+            generate_sentences.used.append(w)
+            return filter_sentences(html, w, wnl)
 
-    return sents
+    return generate_sentences(["nothing"])
+
+generate_sentences.used = []
